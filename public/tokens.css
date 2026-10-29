@@ -1,14 +1,15 @@
-/* Design tokens: newsprint, ink, the vermilion Mark (present in the answer)
-   and the blue Pencil (a fact the assistant got wrong). */
+/* Design tokens: cool proof paper, blue-black ink, the pink Mark (the
+   business is present in the answer) and the blue Pencil (a fact the
+   assistant got wrong). */
 :root{
-  --paper:#F1EDE4; --paper-2:#E7E1D4; --paper-3:#DDD5C5;
-  --ink:#15130F; --graphite:#5C574E; --faint:#8A8476;
-  --rule:rgba(21,19,15,.14); --rule-strong:rgba(21,19,15,.55);
-  --mark:#FF4A1C; --mark-ink:#B8310E; --on-mark:#15130F; --mark-wash:rgba(255,74,28,.10);
-  --pencil:#2340C8; --pencil-wash:rgba(35,64,200,.09);
-  --sheet:#FBF9F4; --shadow:0 1px 0 rgba(21,19,15,.06),0 18px 40px -22px rgba(21,19,15,.35);
+  --paper:#EFF2F4; --paper-2:#E1E6EA; --paper-3:#D2D9DF;
+  --ink:#0E1116; --graphite:#4A5260; --faint:#858D99;
+  --rule:rgba(14,17,22,.14); --rule-strong:rgba(14,17,22,.6);
+  --mark:#FF2E88; --mark-ink:#C2005B; --on-mark:#0E1116; --mark-wash:rgba(255,46,136,.10);
+  --pencil:#2437D9; --pencil-wash:rgba(36,55,217,.09);
+  --sheet:#FFFFFF; --shadow:0 1px 0 rgba(14,17,22,.06),0 18px 40px -22px rgba(14,17,22,.4);
 
-  --serif:"Instrument Serif", "Iowan Old Style", Georgia, serif;
+  --display:"Archivo", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
   --sans:"Schibsted Grotesk", "Helvetica Neue", Arial, sans-serif;
   --mono:"JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
 
@@ -19,18 +20,18 @@
   color-scheme:light;
 }
 @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
-  --paper:#121110; --paper-2:#1B1916; --paper-3:#26231F;
-  --ink:#EDE7DB; --graphite:#A59E91; --faint:#7A7469;
-  --rule:rgba(237,231,219,.13); --rule-strong:rgba(237,231,219,.5);
-  --mark:#FF5A2A; --mark-ink:#FF8A63; --mark-wash:rgba(255,90,42,.13);
-  --pencil:#93A6FF; --pencil-wash:rgba(147,166,255,.12);
-  --sheet:#1E1C19; --shadow:0 1px 0 rgba(0,0,0,.4),0 24px 50px -24px rgba(0,0,0,.8);
+  --paper:#0B0D11; --paper-2:#141820; --paper-3:#1D222C;
+  --ink:#E7ECF3; --graphite:#9AA3B2; --faint:#6B7381;
+  --rule:rgba(231,236,243,.12); --rule-strong:rgba(231,236,243,.5);
+  --mark:#FF4D9A; --mark-ink:#FF7DB6; --mark-wash:rgba(255,77,154,.14);
+  --pencil:#8C9BFF; --pencil-wash:rgba(140,155,255,.12);
+  --sheet:#151A22; --shadow:0 1px 0 rgba(0,0,0,.4),0 24px 50px -24px rgba(0,0,0,.85);
   color-scheme:dark }}
 :root[data-theme="dark"]{
-  --paper:#121110; --paper-2:#1B1916; --paper-3:#26231F;
-  --ink:#EDE7DB; --graphite:#A59E91; --faint:#7A7469;
-  --rule:rgba(237,231,219,.13); --rule-strong:rgba(237,231,219,.5);
-  --mark:#FF5A2A; --mark-ink:#FF8A63; --mark-wash:rgba(255,90,42,.13);
-  --pencil:#93A6FF; --pencil-wash:rgba(147,166,255,.12);
-  --sheet:#1E1C19; --shadow:0 1px 0 rgba(0,0,0,.4),0 24px 50px -24px rgba(0,0,0,.8);
+  --paper:#0B0D11; --paper-2:#141820; --paper-3:#1D222C;
+  --ink:#E7ECF3; --graphite:#9AA3B2; --faint:#6B7381;
+  --rule:rgba(231,236,243,.12); --rule-strong:rgba(231,236,243,.5);
+  --mark:#FF4D9A; --mark-ink:#FF7DB6; --mark-wash:rgba(255,77,154,.14);
+  --pencil:#8C9BFF; --pencil-wash:rgba(140,155,255,.12);
+  --sheet:#151A22; --shadow:0 1px 0 rgba(0,0,0,.4),0 24px 50px -24px rgba(0,0,0,.85);
   color-scheme:dark }

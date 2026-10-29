@@ -23,10 +23,10 @@ Both editions use the same modules (`src/`) and the same route table (`src/route
 
 The interface is designed as **The Answer Desk**: each business is laid out like a proof sheet of what assistants say about it.
 
-- **The Mark** (a vermilion highlighter stroke) appears wherever an assistant names the business.
+- **The Mark** (a hot-pink highlighter stroke) appears wherever an assistant names the business.
 - **The Pencil** (blue proofreader's ink) appears wherever an assistant gets a fact wrong.
 
-Typography: Instrument Serif, Schibsted Grotesk and JetBrains Mono.
+Typography: Archivo (heavy and condensed for headlines and numerals), Schibsted Grotesk and JetBrains Mono, on cool proof paper.
 
 - **The Desk** (per business):
   - § 00 *Front page*: the headline figure, the score over time, a carousel of overheard answers, and a one-sentence summary written from the data.
