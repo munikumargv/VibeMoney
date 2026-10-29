@@ -1,6 +1,8 @@
 // Fictional pilot businesses in Abu Dhabi across the beachhead sectors
 // (food and beverage, fitness, beauty). Names, figures and competitors are
 // made up for the POC.
+export const DEMO_FIXED = ['ironbark-strength', 'lulwa-beauty'];
+
 export const PILOT_BUSINESSES = [
   {
     name: 'Sidra Coffee Roasters',

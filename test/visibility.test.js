@@ -4,7 +4,7 @@ import { createApp } from '../src/app.js';
 import { analyzeAnswer, mentions } from '../src/modules/visibility.js';
 import { compareAudits } from '../src/modules/program.js';
 
-const offline = () => createApp({ llm: { enabled: false, model: 'none' } });
+const offline = () => createApp();
 
 test('mentions matches full and distinctive names, not generic words', () => {
   assert.ok(mentions('Sidra Coffee Roasters', 'Try Sidra Coffee Roasters on Reem.'));
@@ -24,7 +24,7 @@ test('analyzeAnswer flags wrong opening hours', () => {
 
 test('simulated audits are stable until the business changes', async () => {
   const app = offline();
-  app.seed();
+  await app.seed();
   const id = app.businesses.get('saffron-lane').id;
   const a = await app.visibility.run(id);
   const b = await app.visibility.run(id);
@@ -35,13 +35,13 @@ test('simulated audits are stable until the business changes', async () => {
 
 test('the fix plan raises visibility and corrects stale facts', async () => {
   const app = offline();
-  app.seed();
+  await app.seed();
   const id = app.businesses.get('sidra-coffee').id;
   const before = await app.visibility.run(id);
   assert.ok(before.score < 0.2, `baseline ${before.score}`);
-  assert.deepEqual(app.readiness.status(id).plan.map((p) => p.id), ['reviews', 'listings', 'schema', 'agent']);
-  for (const action of ['align_listings', 'request_reviews', 'publish']) app.readiness.apply(id, action);
-  assert.equal(app.readiness.status(id).plan.length, 0);
+  assert.deepEqual((await app.readiness.status(id)).plan.map((p) => p.id), ['reviews', 'listings', 'schema', 'agent']);
+  for (const action of ['align_listings', 'request_reviews', 'publish']) await app.readiness.apply(id, action);
+  assert.equal((await app.readiness.status(id)).plan.length, 0);
   const after = await app.visibility.run(id);
   assert.ok(after.score - before.score >= 0.3, `${before.score} → ${after.score}`);
   assert.equal(after.wrongFacts, 0);
@@ -60,9 +60,9 @@ test('compareAudits uses only assistants present in both audits', () => {
 
 test('program gate counts businesses up 30% or more', async () => {
   const app = offline();
-  app.seed();
+  await app.seed();
   await app.reauditAll('baseline');
-  for (const slug of ['sidra-coffee', 'ironbark-strength', 'lulwa-beauty']) for (const a of ['align_listings', 'request_reviews', 'publish']) app.readiness.apply(slug, a);
+  for (const slug of ['sidra-coffee', 'ironbark-strength', 'lulwa-beauty']) for (const a of ['align_listings', 'request_reviews', 'publish']) await app.readiness.apply(slug, a);
   await app.reauditAll('week-8');
   const p = app.program();
   assert.equal(p.gate.measured, 5);
@@ -70,4 +70,17 @@ test('program gate counts businesses up 30% or more', async () => {
   assert.equal(p.gate.passed, true);
   assert.ok(p.bySector.find((s) => s.sector === 'fitness'));
   assert.deepEqual(app.log.verifyChain(), { ok: true });
+});
+
+test('demo state leaves the featured business for the visitor to fix', async () => {
+  const app = offline();
+  await app.seedDemo();
+  const p = app.program();
+  assert.equal(p.gate.met, 2);
+  assert.equal(p.gate.passed, false);
+  const sidra = app.businesses.get('sidra-coffee');
+  assert.equal(sidra.readiness.agentCardPublished, undefined);
+  for (const a of ['align_listings', 'request_reviews', 'publish']) await app.readiness.apply(sidra.id, a);
+  await app.visibility.run(sidra.id);
+  assert.equal(app.program().gate.passed, true);
 });

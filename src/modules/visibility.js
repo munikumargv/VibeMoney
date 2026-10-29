@@ -51,7 +51,7 @@ function simulateAnswer(b, assistant, prompt) {
   const w = assistant.weights;
   const strength = w.reviews * s.reviews + w.listings * s.listings + w.schema * s.schema + w.agent * s.agent;
   // Same dice every round, so the score only moves when the business changes.
-  const named = dice(b.id, assistant.id, prompt) < Math.max(0.02, strength ** 2 * 0.9);
+  const named = dice(b.slug, assistant.id, prompt) < Math.max(0.02, strength ** 2 * 0.9);
   // Competitors are tracked, not modelled: each appears with a fixed propensity.
   const others = b.competitors.filter((c, i) => dice(c, assistant.id, prompt) < 0.75 - i * 0.12).slice(0, 3);
   const names = [...others];
@@ -60,12 +60,12 @@ function simulateAnswer(b, assistant, prompt) {
     // Assistants repeat whichever listing they trust most; stale listings leak wrong hours.
     const trusted = b.listings.find((l) => l.source === 'google' && l.hours) ?? b.listings.find((l) => l.hours);
     const hours = trusted?.hours ?? b.hours;
-    names.splice(Math.floor(dice(b.id, prompt, 'pos') * (names.length + 1)), 0, b.name);
+    names.splice(Math.floor(dice(b.slug, prompt, 'pos') * (names.length + 1)), 0, b.name);
     if (hours) hoursLine = ` ${b.name} is open ${hours}.`;
   }
   const text = names.length
-    ? `Good options for "${prompt}": ${names.join(', ')}.${hoursLine}`
-    : `I couldn't find specific places for "${prompt}". Try a map search.`;
+    ? `Good options for “${prompt}”: ${names.join(', ')}.${hoursLine}`
+    : `I couldn’t find specific places for “${prompt}”. Try a map search.`;
   return { text, simulated: true };
 }
 

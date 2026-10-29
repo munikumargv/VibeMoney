@@ -1,0 +1,36 @@
+/* Design tokens: newsprint, ink, the vermilion Mark (present in the answer)
+   and the blue Pencil (a fact the assistant got wrong). */
+:root{
+  --paper:#F1EDE4; --paper-2:#E7E1D4; --paper-3:#DDD5C5;
+  --ink:#15130F; --graphite:#5C574E; --faint:#8A8476;
+  --rule:rgba(21,19,15,.14); --rule-strong:rgba(21,19,15,.55);
+  --mark:#FF4A1C; --mark-ink:#B8310E; --on-mark:#15130F; --mark-wash:rgba(255,74,28,.10);
+  --pencil:#2340C8; --pencil-wash:rgba(35,64,200,.09);
+  --sheet:#FBF9F4; --shadow:0 1px 0 rgba(21,19,15,.06),0 18px 40px -22px rgba(21,19,15,.35);
+
+  --serif:"Instrument Serif", "Iowan Old Style", Georgia, serif;
+  --sans:"Schibsted Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --mono:"JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+
+  --margin:clamp(16px, 4vw, 56px);
+  --measure:1440px;
+  --ease:cubic-bezier(.2,.7,.1,1);
+  --t-fast:160ms; --t-med:420ms; --t-slow:900ms;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --paper:#121110; --paper-2:#1B1916; --paper-3:#26231F;
+  --ink:#EDE7DB; --graphite:#A59E91; --faint:#7A7469;
+  --rule:rgba(237,231,219,.13); --rule-strong:rgba(237,231,219,.5);
+  --mark:#FF5A2A; --mark-ink:#FF8A63; --mark-wash:rgba(255,90,42,.13);
+  --pencil:#93A6FF; --pencil-wash:rgba(147,166,255,.12);
+  --sheet:#1E1C19; --shadow:0 1px 0 rgba(0,0,0,.4),0 24px 50px -24px rgba(0,0,0,.8);
+  color-scheme:dark }}
+:root[data-theme="dark"]{
+  --paper:#121110; --paper-2:#1B1916; --paper-3:#26231F;
+  --ink:#EDE7DB; --graphite:#A59E91; --faint:#7A7469;
+  --rule:rgba(237,231,219,.13); --rule-strong:rgba(237,231,219,.5);
+  --mark:#FF5A2A; --mark-ink:#FF8A63; --mark-wash:rgba(255,90,42,.13);
+  --pencil:#93A6FF; --pencil-wash:rgba(147,166,255,.12);
+  --sheet:#1E1C19; --shadow:0 1px 0 rgba(0,0,0,.4),0 24px 50px -24px rgba(0,0,0,.8);
+  color-scheme:dark }

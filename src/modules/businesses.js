@@ -1,6 +1,6 @@
 // Business profiles: the canonical facts every other module works from.
 import { generateKeyPair, randomId } from '../lib/crypto.js';
-import { HttpError } from '../lib/http.js';
+import { HttpError } from '../lib/errors.js';
 
 const slugify = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 
@@ -22,7 +22,7 @@ export class Businesses {
     return b;
   }
 
-  onboard(input) {
+  async onboard(input) {
     for (const field of ['name', 'category', 'city']) {
       if (!input[field]) throw new HttpError(400, `${field} is required`);
     }
@@ -49,7 +49,7 @@ export class Businesses {
       reviews: input.reviews ?? { count: 0, rating: null },
       listings: input.listings ?? [],
       readiness: {},
-      keys: generateKeyPair(), // signs the agent card
+      keys: await generateKeyPair(), // signs the agent card
       createdAt: new Date().toISOString(),
     };
     this.store.put('businesses', business);

@@ -90,7 +90,7 @@ export function llmsTxt(b, baseUrl) {
   ].filter((l) => l !== null).join('\n') + '\n';
 }
 
-export function agentCard(b, baseUrl) {
+export async function agentCard(b, baseUrl) {
   const card = {
     protocol: 'a2a',
     protocolVersion: '1.0',
@@ -109,7 +109,7 @@ export function agentCard(b, baseUrl) {
     publicKey: b.keys.publicKey,
   };
   // Signed with the business key so an agent can tell the card wasn't altered.
-  return { ...card, signature: sign(card, b.keys.privateKey) };
+  return { ...card, signature: await sign(card, b.keys.privateKey) };
 }
 
 export class Readiness {
@@ -117,17 +117,17 @@ export class Readiness {
     Object.assign(this, { store, log, businesses, baseUrl });
   }
 
-  status(id) {
+  async status(id) {
     const b = this.businesses.get(id);
-    return { readiness: b.readiness, plan: fixPlan(b), listingIssues: listingIssues(b), files: this.files(b.id) };
+    return { readiness: b.readiness, plan: fixPlan(b), listingIssues: listingIssues(b), files: await this.files(b.id) };
   }
 
-  files(id) {
+  async files(id) {
     const b = this.businesses.get(id);
     return {
-      'schema.json': schemaOrg(b, this.baseUrl),
       'llms.txt': llmsTxt(b, this.baseUrl),
-      'agent-card.json': agentCard(b, this.baseUrl),
+      'schema.json': schemaOrg(b, this.baseUrl),
+      'agent-card.json': await agentCard(b, this.baseUrl),
     };
   }
 
@@ -172,7 +172,7 @@ export class Readiness {
 
   // Publishing is real: the files are served from this server at the URLs
   // in llms.txt and the agent card.
-  publish(id) {
+  async publish(id) {
     const b = this.businesses.get(id);
     const at = new Date().toISOString();
     for (const key of ['schemaPublished', 'agentCardPublished']) this.businesses.setReadiness(b.id, key, at);

@@ -2,52 +2,75 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Vibe Money</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Vibe Money: The Answer Desk</title>
+<meta name="description" content="See how AI assistants describe your business, correct what they get wrong, and publish facts AI agents can read.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
-<link rel="stylesheet" href="/styles.css">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&family=Schibsted+Grotesk:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="app.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%2315130F'/%3E%3Cpath d='M5 19c7-2 15-2 22-1v5c-7-1-15-1-22 1z' fill='%23FF4A1C'/%3E%3Ctext x='16' y='17' font-family='Georgia' font-size='15' fill='%23F1EDE4' text-anchor='middle'%3EV%3C/text%3E%3C/svg%3E">
 </head>
 <body>
-<header class="top">
-  <div class="wrap bar">
-    <div class="brand"><h1>Vibe Money</h1><span>AI visibility for local businesses</span></div>
-    <nav class="views" aria-label="Views">
-      <button type="button" data-view="business" aria-current="page">Businesses</button>
-      <button type="button" data-view="program">Program outcomes</button>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="masthead" id="masthead">
+  <div class="masthead-row">
+    <a class="wordmark" href="#/" aria-label="Vibe Money, home">
+      <span class="wm-vibe">Vibe</span><span class="wm-money">Money</span>
+    </a>
+    <p class="dateline mono" id="dateline"></p>
+    <nav class="sections" aria-label="Sections">
+      <a href="#/" data-nav="desk">The Desk</a>
+      <a href="#/report" data-nav="report">District Report</a>
     </nav>
-    <span class="pill" id="mode"></span>
   </div>
+  <div class="rule-draw" aria-hidden="true"></div>
+  <nav class="index" aria-label="Pilot businesses">
+    <ol id="index" class="index-list"></ol>
+    <button type="button" class="index-add mono" id="openFile">+ File a business</button>
+  </nav>
 </header>
 
-<main class="wrap" id="view-business">
-  <div class="layout">
-    <aside class="side">
-      <div class="tag">Pilot businesses</div>
-      <ul class="biz-list" id="bizList"></ul>
-      <button type="button" class="btn ghost small" id="showOnboard">Add a business</button>
-      <form id="onboard" class="card form" hidden>
-        <label>Name<input name="name" required></label>
-        <label>Category<input name="category" placeholder="café, gym, salon…" required></label>
-        <label>Sector<select name="sector"><option>food &amp; beverage</option><option>fitness</option><option>beauty</option><option>other</option></select></label>
-        <label>District<input name="district" placeholder="Al Reem Island"></label>
-        <label>City<input name="city" value="Abu Dhabi" required></label>
-        <label>Opening hours<input name="hours" placeholder="Mo-Su 09:00-21:00"></label>
-        <label>Competitors<input name="competitors" placeholder="Comma-separated"></label>
-        <label>Reviews on Google<input name="reviews" type="number" min="0" value="0"></label>
-        <button class="btn" type="submit">Onboard</button>
-      </form>
-    </aside>
+<main id="main" tabindex="-1"></main>
 
-    <section class="content" id="biz" aria-live="polite">
-      <p class="empty">Loading…</p>
-    </section>
+<footer class="colophon">
+  <div class="colophon-grid">
+    <p class="colophon-title serif">Colophon</p>
+    <p>Set in Instrument Serif, Schibsted Grotesk and JetBrains Mono. The pilot businesses, their figures and competitors are fictional. Answers from assistants marked <span class="sim-tag">sim</span> are simulated by a model of the signals research links to being recommended. They show how the method works; they are not evidence.</p>
+    <p id="modeNote"></p>
+    <p class="colophon-actions"><button type="button" class="text-btn" id="resetDemo">Reset the demo</button></p>
   </div>
-</main>
+</footer>
 
-<main class="wrap" id="view-program" hidden></main>
+<dialog class="sheet-dialog" id="fileDialog" aria-labelledby="fileTitle">
+  <form method="dialog" class="file-form" id="fileForm">
+    <header><p class="kicker mono">New entry</p><h2 class="serif" id="fileTitle">File a business</h2></header>
+    <label class="field"><span>Business name</span><input name="name" required autocomplete="off"></label>
+    <div class="field-row">
+      <label class="field"><span>Category</span><input name="category" required placeholder="café, gym, salon"></label>
+      <label class="field"><span>Sector</span>
+        <select name="sector"><option>food &amp; beverage</option><option>fitness</option><option>beauty</option><option>other</option></select></label>
+    </div>
+    <div class="field-row">
+      <label class="field"><span>District</span><input name="district" placeholder="Al Reem Island"></label>
+      <label class="field"><span>City</span><input name="city" value="Abu Dhabi" required></label>
+    </div>
+    <label class="field"><span>Opening hours <em>schema.org format</em></span><input name="hours" placeholder="Mo-Su 09:00-21:00" pattern="^[A-Za-z ,;:\-0-9]*$"></label>
+    <label class="field"><span>Nearby competitors <em>comma-separated</em></span><input name="competitors" placeholder="Brew Theory, Common Grounds"></label>
+    <label class="field"><span>Google reviews today</span><input name="reviews" type="number" min="0" value="0"></label>
+    <p class="form-error" id="fileError" role="alert"></p>
+    <footer><button type="button" class="text-btn" value="cancel" id="fileCancel">Cancel</button><button class="press" type="submit">File and audit <span aria-hidden="true">→</span></button></footer>
+  </form>
+</dialog>
 
-<footer class="wrap foot">Pilot businesses, figures and competitors are fictional. Simulated assistants are labelled; set ANTHROPIC_API_KEY to add real Claude answers.</footer>
-<script type="module" src="/app.js"></script>
+<dialog class="sheet-dialog wide" id="pageDialog" aria-labelledby="pageTitle">
+  <header class="page-dialog-head"><p class="kicker mono" id="pageTitle">Public page</p><button type="button" class="text-btn" id="pageClose">Close</button></header>
+  <iframe id="pageFrame" title="Business public page" sandbox="allow-same-origin"></iframe>
+</dialog>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script type="module" src="js/app.js"></script>
 </body>
 </html>

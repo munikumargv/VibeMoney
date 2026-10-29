@@ -1,16 +1,10 @@
-// Tiny document store: named collections of records keyed by id, persisted as
-// one JSON file. Good enough for a POC with a handful of pilot businesses; swap
-// for Postgres before the live pilot.
-import fs from 'node:fs';
-import path from 'node:path';
-
+// Tiny document store: named collections of records keyed by id. Persistence
+// is pluggable so the same store runs on a JSON file (server) or
+// localStorage (static site). Fine for a POC with a handful of businesses.
 export class Store {
-  constructor(file = null) {
-    this.file = file;
-    this.data = {};
-    if (file && fs.existsSync(file)) {
-      this.data = JSON.parse(fs.readFileSync(file, 'utf8'));
-    }
+  constructor({ load = () => null, save = () => {} } = {}) {
+    this.persist = save;
+    this.data = load() ?? {};
   }
 
   collection(name) {
@@ -39,7 +33,7 @@ export class Store {
     return this.put(name, { ...current, ...patch });
   }
 
-  // Singletons such as the audit-log head or the chain's block height.
+  // Singletons such as the audit-log head.
   meta(key, value) {
     const meta = this.collection('_meta');
     if (value !== undefined) {
@@ -50,10 +44,6 @@ export class Store {
   }
 
   save() {
-    if (!this.file) return;
-    fs.mkdirSync(path.dirname(this.file), { recursive: true });
-    const tmp = `${this.file}.tmp`;
-    fs.writeFileSync(tmp, JSON.stringify(this.data, null, 2));
-    fs.renameSync(tmp, this.file);
+    this.persist(this.data);
   }
 }

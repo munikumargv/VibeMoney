@@ -1,26 +1,56 @@
-# Vibe Money: AI visibility POC
+# Vibe Money: The Answer Desk
 
 Customers ask AI assistants where to eat, train or get their hair done. Most local businesses aren't in the answer, or the assistant gets their facts wrong. Vibe Money shows a business how assistants describe it, fixes what holds it back, and publishes its facts in a form AI agents can read.
 
-This POC covers the **Free audit** and **Visible** tiers from the Presight proposal, and the program-outcomes view for the Abu Dhabi Chamber SME pilot. Offers, payments and tokens are out of scope.
+This POC covers the **Free audit** and **Visible** tiers from the Presight proposal, and the outcomes view for the Abu Dhabi Chamber SME pilot. Offers, payments and tokens are out of scope.
 
-## What it does
+## Two editions, one engine
 
-| Step | What happens | Real or simulated |
+| Edition | How to run | What runs where |
 |---|---|---|
-| **Audit** | Asks a fixed set of customer questions ("quiet café to work from on Al Reem Island") across assistants. Scores how often the business is named, whether its facts (opening hours) are right, and how it ranks against named competitors. | Claude answers are real when `ANTHROPIC_API_KEY` is set. Four labelled simulated assistants always run. |
-| **Fix plan** | Ranks the causes of low visibility: few reviews, missing or inconsistent listings (Google, Yelp, Bing), no structured data, nothing agents can read. Each fix has a one-click action. | Listing updates and review responses are simulated: no platform APIs yet. |
-| **Publish** | Serves `schema.org` JSON-LD, `llms.txt`, a signed A2A agent card and a read-only MCP endpoint for each business. | Real: served by this server. |
-| **Re-audit** | Re-runs the same questions so the before/after score is comparable. Monthly re-audits run with `REAUDIT_INTERVAL_HOURS`. | Same as Audit. |
-| **Program outcomes** | Baseline vs latest for every pilot business, rolled up by sector and district and checked against the week-8 gate (visibility up ≥30% for at least half the businesses). | It compares only assistants that appear in both audits, and flags results that rest on simulated assistants. |
+| **Static** (GitHub Pages) | Pushed automatically by `.github/workflows/pages.yml` | The whole engine runs in the visitor's browser, with state kept in `localStorage`. Simulated assistants only, because an API key can't live in a public page. |
+| **Server** | `npm start` | Node server with a JSON store. Adds real Claude answers when `ANTHROPIC_API_KEY` is set, and serves the published files and MCP endpoint at real URLs. |
 
-Every agent and owner action goes to a hash-chained activity log (`/api/audit-log` verifies the chain).
+Both editions use the same modules (`src/`) and the same route table (`src/routes.js`). The static build bundles them for the browser with esbuild.
 
-### About the simulated assistants
+### Turning on GitHub Pages (one time)
 
-They are deterministic and are driven by the signals research links to being recommended: review volume (recommended businesses average about 133 Google reviews, ignored ones about 11), listing presence and consistency, structured data, and agent readability. A business's simulated score changes only when one of those changes. That makes the fix-to-score loop demonstrable, but **it is a model, not evidence**. The pilot's evidence must come from real assistants.
+1. Repository **Settings → Pages → Build and deployment → Source: GitHub Actions**.
+2. Pages on a **private** repository needs a paid GitHub plan (Pro, Team or Enterprise). On a free plan, make the repository public or deploy from a public fork.
+3. Re-run the "Deploy to GitHub Pages" workflow, or push a commit. The site appears at `https://<owner>.github.io/VibeMoney/`.
 
-## Run it
+## The interface
+
+The interface is designed as **The Answer Desk**: each business is laid out like a proof sheet of what assistants say about it.
+
+- **The Mark** (a vermilion highlighter stroke) appears wherever an assistant names the business.
+- **The Pencil** (blue proofreader's ink) appears wherever an assistant gets a fact wrong.
+
+Typography: Instrument Serif, Schibsted Grotesk and JetBrains Mono.
+
+- **The Desk** (per business):
+  - § 00 *Front page*: the headline figure, the score over time, a carousel of overheard answers, and a one-sentence summary written from the data.
+  - § 01 *The question sheet*: every question × assistant, with marks. Open any mark to read the answer.
+  - § 02 *Who they name instead*: share of mentions and tally marks per competitor.
+  - § 03 *Corrections*: the ranked fix plan, with one action per fix. Fixed items are struck through and stamped.
+  - § 04 *What agents read*: llms.txt, schema.json and the signed agent card as a printed proof, beside a console that sends a real agent through discovery, signature check and MCP calls.
+  - § 05 *The ledger*: the hash-chained activity log.
+- **District Report** (for the program sponsor): the week-8 gate, a before/after slopegraph, and roll-ups by sector and district.
+
+The demo opens with two of five businesses already fixed, and the gate not met. Fixing Sidra Coffee Roasters and asking the assistants again moves the gate to met.
+
+## What's real and what's simulated
+
+| Step | Real | Simulated |
+|---|---|---|
+| Audit | Claude answers (server edition, with an API key) | Four labelled assistants driven by the signals research links to being recommended: review volume, listing consistency, structured data, agent readability |
+| Fix listings, request reviews | | Simulated: no platform APIs yet. Labelled `sim` everywhere. |
+| Publish | schema.org, llms.txt, a signed A2A agent card and a read-only MCP endpoint | |
+| Program outcomes | Comparison only on assistants present in both audits | Flagged when it rests on simulated assistants |
+
+The simulated assistants are deterministic, so a score moves only when the business changes. They show how the method works; **they are not evidence**.
+
+## Run the server edition
 
 Needs Node 20+.
 
@@ -29,34 +59,42 @@ npm install
 ```
 
 ```bash
-npm run seed:journey
+npm run seed
 ```
 
 ```bash
 npm start
 ```
 
-Open http://localhost:3000. `seed:journey` loads five fictional Abu Dhabi businesses (café, gym, salon, restaurant, yoga studio), runs baseline audits, applies the fix plan to three of them and re-audits. Use `npm run seed` for baselines only.
-
-To add real Claude answers to audits:
+Open http://localhost:3000. To add real Claude answers:
 
 ```bash
 ANTHROPIC_API_KEY=sk-ant-... npm start
 ```
 
-To see what an AI agent gets from a published business (run while the server is up):
+To try the static edition locally:
 
 ```bash
-npm run demo:agent -- sidra-coffee
+npm run build
 ```
 
-Tests:
+```bash
+npx serve dist
+```
+
+## Other commands
+
+To see what an agent gets from a published business (with the server running):
+
+```bash
+npm run demo:agent -- ironbark-strength
+```
 
 ```bash
 npm test
 ```
 
-## Configuration
+## Configuration (server)
 
 | Variable | Default | Purpose |
 |---|---|---|
@@ -69,46 +107,36 @@ npm test
 
 ## Endpoints
 
-Owner console API:
-
-- `GET /api/businesses`, `POST /api/businesses` (onboard), `GET|PUT /api/businesses/:id`
-- `POST /api/businesses/:id/audits`, `GET /api/businesses/:id/audits`
-- `GET /api/businesses/:id/readiness` (fix plan and file previews)
+- `GET /api/businesses`, `POST /api/businesses`, `GET|PUT /api/businesses/:id`
+- `POST|GET /api/businesses/:id/audits`, `GET /api/businesses/:id/readiness`
 - `POST /api/businesses/:id/fixes/{align_listings|request_reviews|publish}`
-- `GET /api/program`, `POST /api/program/reaudit`
-- `GET /api/audit-log`
-
-Published per business (after Publish):
-
-- `GET /b/:slug`: public page with embedded JSON-LD
-- `GET /b/:slug/schema.json`, `GET /b/:slug/llms.txt`
-- `GET /b/:slug/.well-known/agent-card.json`: signed with the business's Ed25519 key
-- `POST /mcp/:slug`: MCP over JSON-RPC (`initialize`, `tools/list`, `tools/call`). Tools: `get_business_profile`, `get_opening_hours`, `get_menu`.
+- `GET /api/program`, `POST /api/program/reaudit`, `GET /api/audit-log`, `POST /api/demo/reset`
+- Published, after Publish:
+  - `GET /b/:slug`
+  - `/b/:slug/schema.json`
+  - `/b/:slug/llms.txt`
+  - `/b/:slug/.well-known/agent-card.json`
+  - `POST /mcp/:slug` (MCP JSON-RPC: `get_business_profile`, `get_opening_hours`, `get_menu`)
 
 ## Layout
 
 ```
 src/
-  server.js            HTTP routes, public pages, scheduler
-  app.js               wires modules together (used by server and tests)
-  seed.js              fictional pilot businesses
-  llm/claude.js        optional Claude client for real audit answers
-  mcp/server.js        read-only MCP endpoint
-  modules/
-    businesses.js      business profiles
-    visibility.js      audit harness, answer analysis, competitor comparison
-    readiness.js       fix plan, listing checks, schema.org / llms.txt / agent card
-    program.js         outcomes by sector and district, week-8 gate
-    hours.js           opening-hours parsing and open-now checks
-  lib/                 store, crypto, audit log, HTTP helpers
-public/                owner console (vanilla JS)
-scripts/               seed and demo agent
-test/                  node:test suites
+  app.js, routes.js, pages.js, seed.js   engine wiring, shared API, public page, demo data
+  server.js                              Node entry point
+  browser/engine.js                      in-browser entry point for the static edition
+  modules/                               visibility audit, fix plan and publishing, program report, hours
+  mcp/server.js                          read-only MCP endpoint
+  llm/claude.js                          optional Claude client (server only)
+  lib/                                   store, isomorphic crypto, audit log, router
+public/                                  The Answer Desk (vanilla JS modules, no framework)
+scripts/                                 seed, static build, demo agent
+.github/workflows/pages.yml              test, build, deploy to GitHub Pages
 ```
 
 ## Next steps for the pilot
 
 1. Add more real assistants beside Claude, and run each question several times to account for answer variance.
-2. Connect the Google Business Profile, Yelp and Bing Places APIs for listing fixes, and a consented review-request channel (WhatsApp or email).
-3. Pull baseline facts from the business's website and Google profile instead of manual onboarding.
-4. Move storage to a UAE-hosted database. Add owner logins, and Arabic in both the console and the published files.
+2. Connect the Google Business Profile, Yelp and Bing Places APIs, and a consented review-request channel.
+3. Pull baseline facts from the business's website and Google profile.
+4. Move to UAE hosting with owner logins, and add Arabic in the console and the published files.

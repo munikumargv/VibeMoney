@@ -15,7 +15,7 @@ if (!cardRes.ok) {
 }
 const { signature, ...card } = await cardRes.json();
 step('discover', `found agent card for ${card.name}; skills: ${card.skills.map((s) => s.id).join(', ')}`);
-step('verify', verify(card, signature, card.publicKey) ? 'card signature valid' : 'card signature INVALID');
+step('verify', (await verify(card, signature, card.publicKey)) ? 'card signature valid' : 'card signature INVALID');
 
 let id = 0;
 const rpc = async (method, params) => {
