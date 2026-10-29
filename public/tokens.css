@@ -1,11 +1,11 @@
-/* Design tokens: cool proof paper, blue-black ink, the pink Mark (the
+/* Design tokens: cool proof paper, blue-black ink, the olive Mark (the
    business is present in the answer) and the blue Pencil (a fact the
    assistant got wrong). */
 :root{
   --paper:#EFF2F4; --paper-2:#E1E6EA; --paper-3:#D2D9DF;
   --ink:#0E1116; --graphite:#4A5260; --faint:#858D99;
   --rule:rgba(14,17,22,.14); --rule-strong:rgba(14,17,22,.6);
-  --mark:#FF2E88; --mark-ink:#C2005B; --on-mark:#0E1116; --mark-wash:rgba(255,46,136,.10);
+  --mark:#8FA02A; --mark-ink:#5C6B12; --on-mark:#0E1116; --mark-wash:rgba(143,160,42,.14);
   --pencil:#2437D9; --pencil-wash:rgba(36,55,217,.09);
   --sheet:#FFFFFF; --shadow:0 1px 0 rgba(14,17,22,.06),0 18px 40px -22px rgba(14,17,22,.4);
 
@@ -23,7 +23,7 @@
   --paper:#0B0D11; --paper-2:#141820; --paper-3:#1D222C;
   --ink:#E7ECF3; --graphite:#9AA3B2; --faint:#6B7381;
   --rule:rgba(231,236,243,.12); --rule-strong:rgba(231,236,243,.5);
-  --mark:#FF4D9A; --mark-ink:#FF7DB6; --mark-wash:rgba(255,77,154,.14);
+  --mark:#A8BA3C; --mark-ink:#C4D45E; --mark-wash:rgba(168,186,60,.16);
   --pencil:#8C9BFF; --pencil-wash:rgba(140,155,255,.12);
   --sheet:#151A22; --shadow:0 1px 0 rgba(0,0,0,.4),0 24px 50px -24px rgba(0,0,0,.85);
   color-scheme:dark }}
@@ -31,7 +31,7 @@
   --paper:#0B0D11; --paper-2:#141820; --paper-3:#1D222C;
   --ink:#E7ECF3; --graphite:#9AA3B2; --faint:#6B7381;
   --rule:rgba(231,236,243,.12); --rule-strong:rgba(231,236,243,.5);
-  --mark:#FF4D9A; --mark-ink:#FF7DB6; --mark-wash:rgba(255,77,154,.14);
+  --mark:#A8BA3C; --mark-ink:#C4D45E; --mark-wash:rgba(168,186,60,.16);
   --pencil:#8C9BFF; --pencil-wash:rgba(140,155,255,.12);
   --sheet:#151A22; --shadow:0 1px 0 rgba(0,0,0,.4),0 24px 50px -24px rgba(0,0,0,.85);
   color-scheme:dark }
