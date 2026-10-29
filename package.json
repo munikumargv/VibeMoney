@@ -1,0 +1,21 @@
+{
+  "name": "vibemoney",
+  "version": "0.1.0",
+  "description": "Vibe Money POC: see how AI assistants describe a local business, fix it, and make it readable to AI agents.",
+  "type": "module",
+  "private": true,
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "seed": "node scripts/seed.js",
+    "seed:journey": "node scripts/seed.js --journey",
+    "demo:agent": "node scripts/demo-agent.js",
+    "test": "node --test test/*.test.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^1.3.0"
+  }
+}
